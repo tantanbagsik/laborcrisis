@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
 
 const jobCategories = [
   { name: "Marketing & Communication", jobs: 60, icon: "01" },
@@ -12,51 +13,6 @@ const jobCategories = [
   { name: "Project Management", jobs: 85, icon: "07" },
   { name: "Armforce Guide & Security", jobs: 62, icon: "08" },
   { name: "Health Care & Medical", jobs: 52, icon: "09" },
-];
-
-const featuredJobs = [
-  {
-    title: "PRODUCT DESIGNER",
-    company: "NESTLE BUSINESS SERVICES AOA INC",
-    location: "Manila, Philippines",
-    type: "Hybrid",
-    salary: "$600/month",
-  },
-  {
-    title: "RECEPTIONIST (BEAUTY INDUSTRY)",
-    company: "PRIVATE ADVERTISER",
-    location: "Singapore",
-    type: "Full time",
-    salary: "$2,500–3,500/month (SGD)",
-  },
-  {
-    title: "PROJECT ENGINEER (ELECTRICAL)",
-    company: "ALWAYS HIRED PTE. LTD.",
-    location: "Central Region, Singapore",
-    type: "Full time",
-    salary: "$4,000–5,000/month (SGD)",
-  },
-  {
-    title: "ACCOUNTANT",
-    company: "FELCOR PETROLEUM PTE LTD",
-    location: "Central Region, Singapore",
-    type: "Full time",
-    salary: "$4,000–5,300/month (SGD)",
-  },
-  {
-    title: "PRESCHOOL TEACHERS",
-    company: "WORKPLUS RECRUITMENT CENTRE PTE LTD",
-    location: "Singapore",
-    type: "Full time",
-    salary: "$3,000–4,000/month (SGD)",
-  },
-  {
-    title: "EVENTS MANAGER",
-    company: "NANYANG TECHNOLOGICAL UNIVERSITY",
-    location: "Pioneer, West Region, Singapore",
-    type: "Hybrid",
-    salary: "$4,000–5,300/month (SGD)",
-  },
 ];
 
 const testimonials = [
@@ -107,10 +63,115 @@ export default function Home() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [featuredJobs, setFeaturedJobs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    fetchFeaturedJobs();
   }, []);
+
+  const fetchFeaturedJobs = async () => {
+    try {
+      const jobs = await api.getFeaturedJobs();
+      if (jobs && jobs.length > 0) {
+        setFeaturedJobs(jobs);
+      } else {
+        setFeaturedJobs([
+          {
+            title: "PRODUCT DESIGNER",
+            company: "NESTLE BUSINESS SERVICES AOA INC",
+            location: "Manila, Philippines",
+            type: "Hybrid",
+            salary: "$600/month",
+          },
+          {
+            title: "RECEPTIONIST (BEAUTY INDUSTRY)",
+            company: "PRIVATE ADVERTISER",
+            location: "Singapore",
+            type: "Full time",
+            salary: "$2,500–3,500/month (SGD)",
+          },
+          {
+            title: "PROJECT ENGINEER (ELECTRICAL)",
+            company: "ALWAYS HIRED PTE. LTD.",
+            location: "Central Region, Singapore",
+            type: "Full time",
+            salary: "$4,000–5,000/month (SGD)",
+          },
+          {
+            title: "ACCOUNTANT",
+            company: "FELCOR PETROLEUM PTE LTD",
+            location: "Central Region, Singapore",
+            type: "Full time",
+            salary: "$4,000–5,300/month (SGD)",
+          },
+          {
+            title: "PRESCHOOL TEACHERS",
+            company: "WORKPLUS RECRUITMENT CENTRE PTE LTD",
+            location: "Singapore",
+            type: "Full time",
+            salary: "$3,000–4,000/month (SGD)",
+          },
+          {
+            title: "EVENTS MANAGER",
+            company: "NANYANG TECHNOLOGICAL UNIVERSITY",
+            location: "Pioneer, West Region, Singapore",
+            type: "Hybrid",
+            salary: "$4,000–5,300/month (SGD)",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      setFeaturedJobs([
+        {
+          title: "PRODUCT DESIGNER",
+          company: "NESTLE BUSINESS SERVICES AOA INC",
+          location: "Manila, Philippines",
+          type: "Hybrid",
+          salary: "$600/month",
+        },
+        {
+          title: "RECEPTIONIST (BEAUTY INDUSTRY)",
+          company: "PRIVATE ADVERTISER",
+          location: "Singapore",
+          type: "Full time",
+          salary: "$2,500–3,500/month (SGD)",
+        },
+        {
+          title: "PROJECT ENGINEER (ELECTRICAL)",
+          company: "ALWAYS HIRED PTE. LTD.",
+          location: "Central Region, Singapore",
+          type: "Full time",
+          salary: "$4,000–5,000/month (SGD)",
+        },
+        {
+          title: "ACCOUNTANT",
+          company: "FELCOR PETROLEUM PTE LTD",
+          location: "Central Region, Singapore",
+          type: "Full time",
+          salary: "$4,000–5,300/month (SGD)",
+        },
+        {
+          title: "PRESCHOOL TEACHERS",
+          company: "WORKPLUS RECRUITMENT CENTRE PTE LTD",
+          location: "Singapore",
+          type: "Full time",
+          salary: "$3,000–4,000/month (SGD)",
+        },
+        {
+          title: "EVENTS MANAGER",
+          company: "NANYANG TECHNOLOGICAL UNIVERSITY",
+          location: "Pioneer, West Region, Singapore",
+          type: "Hybrid",
+          salary: "$4,000–5,300/month (SGD)",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,11 +187,23 @@ export default function Home() {
     window.location.href = "/post-a-job";
   };
 
-  const handleApplyJob = (jobTitle: string) => {
+  const handleApplyJob = (jobId: string, jobTitle: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to apply for jobs");
+      window.location.href = "/login";
+      return;
+    }
     alert(`Applying for ${jobTitle}. This would redirect to the application form.`);
   };
 
-  const handleUploadCV = () => {
+  const handleUploadCV = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to upload your CV");
+      window.location.href = "/login";
+      return;
+    }
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".pdf,.doc,.docx";
@@ -478,7 +551,7 @@ export default function Home() {
                   </dl>
                   
                   <button 
-                    onClick={() => handleApplyJob(job.title)}
+                    onClick={() => handleApplyJob(job._id || job.title, job.title)}
                     className="mt-8 w-full rounded-full bg-[#E61E25] py-3 text-center text-base font-semibold text-white transition-all duration-300 hover:bg-[#cc151c] hover:shadow-lg hover:-translate-y-1"
                   >
                     Apply Now
