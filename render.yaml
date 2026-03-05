@@ -1,0 +1,18 @@
+services:
+  - name: laborcrisis-backend
+    type: web
+    region: oregon
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        # Add your MongoDB connection string in Render dashboard or use a managed MongoDB add-on
+        # For managed MongoDB, use: {{ mongo.MONGO_URI }}
+        value: your_mongodb_connection_string_here
+      - key: JWT_SECRET
+        # Generate a secure secret and add it in Render dashboard
+        value: your_jwt_secret_here
+      - key: PORT
+        value: 10000
