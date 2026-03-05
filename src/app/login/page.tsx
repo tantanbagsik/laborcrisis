@@ -28,7 +28,11 @@ export default function LoginPage() {
           localStorage.setItem("token", result.token);
           localStorage.setItem("user", JSON.stringify(result));
           alert("Login successful!");
-          router.push("/");
+          if (result.role === 'admin') {
+            router.push("/admin");
+          } else {
+            router.push("/dashboard");
+          }
         } else {
           setError(result.message || "Login failed");
         }
@@ -38,7 +42,11 @@ export default function LoginPage() {
           localStorage.setItem("token", result.token);
           localStorage.setItem("user", JSON.stringify(result));
           alert("Registration successful!");
-          router.push("/");
+          if (result.role === 'admin') {
+            router.push("/admin");
+          } else {
+            router.push("/dashboard");
+          }
         } else {
           setError(result.message || "Registration failed");
         }
