@@ -1,29 +1,57 @@
-# Labor Crisis
+# LaborCrisis
 
-A job portal website for connecting employers with skilled workers.
+A full-featured job portal platform for connecting employers with skilled workers, built with Next.js 16 and MongoDB.
 
 ## Tech Stack
 
 - **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS
-- **Backend:** Node.js, Express, MongoDB
-- **Deployment:** Vercel (Frontend), Render/Railway (Backend)
+- **Backend:** Next.js API Routes (Serverless), MongoDB Atlas
+- **Database:** MongoDB
+- **Deployment:** Vercel
+
+## Features
+
+### User Features
+- User Registration & Login (Worker/Employer roles)
+- Browse and Search Jobs
+- Apply for Jobs
+- Job Listings by Category, Location, Type
+- User Profile Management
+
+### Admin Panel
+- Dashboard with Statistics
+- Users Management (View, Change Role, Delete)
+- Jobs Management (View, Change Status, Delete)
+- Applications Management (View, Update Status, Delete)
 
 ## Project Structure
 
 ```
 laborcrisis/
-├── src/app/              # Next.js frontend
-├── backend/              # Express.js backend
-│   ├── src/
-│   │   ├── models/       # MongoDB models
-│   │   ├── routes/       # API routes
-│   │   └── server.js     # Express server
-│   └── package.json
-├── public/               # Static assets
+├── src/
+│   ├── app/                  # Next.js App Router
+│   │   ├── api/             # API Routes
+│   │   │   ├── auth/        # Authentication endpoints
+│   │   │   ├── jobs/        # Jobs endpoints
+│   │   │   ├── applications/# Applications endpoints
+│   │   │   └── admin/       # Admin endpoints
+│   │   ├── admin/           # Admin Panel Pages
+│   │   ├── jobs/            # Jobs listing page
+│   │   ├── login/           # Login page
+│   │   └── page.tsx         # Home page
+│   ├── models/              # MongoDB Models
+│   ├── lib/                 # Utility functions
+│   └── types/               # TypeScript types
+├── backend/                  # Express.js backend (deprecated)
+├── public/                   # Static assets
 └── package.json
 ```
 
 ## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account
 
 ### Frontend Setup
 
@@ -35,68 +63,80 @@ npm install
 npm run dev
 ```
 
-### Backend Setup
+Open [http://localhost:3000](http://localhost:3000)
 
-```bash
-cd backend
+### Environment Variables
 
-# Install dependencies
-npm install
+Create `.env.local` in root directory:
 
-# Create .env file
-# MONGO_URI=your_mongodb_connection_string
-# JWT_SECRET=your_secret_key
-
-# Start development server
-npm run dev
-```
-
-## Environment Variables
-
-### Backend (.env)
-
-```
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/laborcrisis
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 ```
+
+For Vercel deployment, add these environment variables in Vercel Dashboard.
 
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/me` - Get current user
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth` | Register/Login (action: register/login) |
+| GET | `/api/auth` | Get current user |
 
 ### Jobs
-- `GET /api/jobs` - Get all jobs
-- `GET /api/jobs/:id` - Get single job
-- `POST /api/jobs` - Create job
-- `PUT /api/jobs/:id` - Update job
-- `DELETE /api/jobs/:id` - Delete job
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/jobs` | Get all jobs |
+| GET | `/api/jobs/featured` | Get featured jobs |
+| GET | `/api/jobs/[id]` | Get single job |
+| POST | `/api/jobs` | Create job |
 
 ### Applications
-- `POST /api/applications` - Apply for job
-- `GET /api/applications/worker/:id` - Get worker's applications
-- `GET /api/applications/job/:id` - Get job's applications
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/applications` | Get applications |
+| POST | `/api/applications` | Submit application |
+
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/stats` | Dashboard statistics |
+| GET/POST | `/api/admin/users` | Manage users |
+| GET/POST | `/api/admin/jobs` | Manage jobs |
+| GET/POST | `/api/admin/applications` | Manage applications |
 
 ## Deployment
 
-### Frontend (Vercel)
+### Deploy to Vercel
+
 ```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
 vercel --prod
 ```
 
-### Backend (Render/Railway)
-1. Connect GitHub repo to Render/Railway
-2. Set root directory to `backend`
-3. Add environment variables
-4. Deploy
+### MongoDB Atlas Setup
+
+1. Create a cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create database user
+3. Add IP to whitelist (use `0.0.0.0/0` for all IPs)
+4. Get connection string
 
 ## Live URLs
 
 - **Frontend:** https://laborcrisis.vercel.app
-- **Backend:** (Deploy to Render/Railway)
+- **Admin Panel:** https://laborcrisis.vercel.app/admin
+
+## Default Admin Account
+
+Create admin user via MongoDB Compass or Atlas:
+- Email: rpanganiban
+- Password: Titankalimot08!
+- Role: admin
 
 ## License
 
