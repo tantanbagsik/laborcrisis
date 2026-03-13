@@ -7,6 +7,8 @@ interface User {
   role: string;
   phone?: string;
   skills?: string[];
+  projects?: any[];
+  portfolio?: any[];
 }
 
 export function useAuth() {
@@ -15,12 +17,26 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    try {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      if (storedToken && storedUser) {
+        setToken(storedToken);
+        const parsedUser = JSON.parse(storedUser);
+        // Ensure the parsed user has the required fields
+        if (parsedUser && parsedUser._id && parsedUser.name && parsedUser.email && parsedUser.role) {
+          setUser(parsedUser);
+        } else {
+          console.error('Invalid user data in localStorage');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
     setLoading(false);
   }, []);
