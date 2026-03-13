@@ -54,11 +54,16 @@ export default function UserDashboard() {
   const fetchJobs = async () => {
     try {
       const res = await fetch('/api/jobs?limit=5');
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setJobs(data);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setJobs(data);
+        } else {
+          console.error('Invalid jobs data:', data);
+          setJobs([]);
+        }
       } else {
-        console.error('Invalid jobs data:', data);
+        console.error('Failed to fetch jobs:', res.status);
         setJobs([]);
       }
     } catch (error) {
@@ -98,11 +103,16 @@ export default function UserDashboard() {
       const res = await fetch('/api/applications?workerId=me', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setApplications(data);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setApplications(data);
+        } else {
+          console.error('Invalid applications data:', data);
+          setApplications([]);
+        }
       } else {
-        console.error('Invalid applications data:', data);
+        console.error('Failed to fetch applications:', res.status);
         setApplications([]);
       }
     } catch (error) {
