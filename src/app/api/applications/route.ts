@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import jwt from 'jsonwebtoken';
 import { connectDB } from '@/lib/mongodb';
 import { Application } from '@/models/Application';
 import { Job } from '@/models/Job';
@@ -40,10 +41,19 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const workerId = searchParams.get('workerId');
+    let workerId = searchParams.get('workerId');
     const jobId = searchParams.get('jobId');
     
     await connectDB();
+    
+    if (workerId === 'me') {
+      const token = request.headers.get('authorization')?.split(' ')[1];
+      if (!token) {
+        return NextResponse.json({ message: 'Not authorized' }, { status: 401 });
+      }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'laborcrisis_secret_key_2024') as { id: string };
+      workerId = decoded.id;
+    }
     
     if (workerId) {
       const applications = await Application.find({ worker: workerId })
