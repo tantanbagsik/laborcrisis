@@ -286,16 +286,16 @@ Link: ${p.link}
               <Link href="/" className="text-2xl font-bold text-blue-600">LaborCrisis</Link>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">
-                Welcome, {user.name} 
-                <span className={`ml-2 px-2 py-1 text-xs rounded ${
-                  isAdmin ? 'bg-red-100 text-red-600' : 
-                  isEmployer ? 'bg-blue-100 text-blue-600' : 
-                  'bg-green-100 text-green-600'
-                }`}>
-                  {user.role}
-                </span>
-              </span>
+               <span className="text-gray-700">
+                 Welcome, {user.name}
+                 <span className={`ml-2 px-2 py-1 text-xs rounded ${
+                   isAdmin ? 'bg-red-100 text-red-600' : 
+                   isEmployer ? 'bg-blue-100 text-blue-600' : 
+                   'bg-green-100 text-green-600'
+                 }`}>
+                   {user.role === 'worker' ? 'Job Seeker' : user.role}
+                 </span>
+               </span>
               {isAdmin && (
                 <Link href="/admin" className="text-blue-600 hover:text-blue-800">
                   Admin Panel
