@@ -311,30 +311,33 @@ Link: ${p.link}
 
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          {isAdmin ? 'Admin Dashboard' : isEmployer ? 'Employer Dashboard' : 'Worker Dashboard'}
+          {isAdmin ? 'Admin Dashboard' : isEmployer ? 'Employer Dashboard' : 'Worker / Job Seeker Dashboard'}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {isWorker && (
-            <>
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-700">My Applications</h3>
-                <p className="text-3xl font-bold text-blue-600 mt-2">{applications.length}</p>
-              </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-700">Pending</h3>
-                <p className="text-3xl font-bold text-yellow-600 mt-2">
-                  {applications.filter((a: any) => a.status === 'pending').length}
-                </p>
-              </div>
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold text-gray-700">Hired</h3>
-                <p className="text-3xl font-bold text-green-600 mt-2">
-                  {applications.filter((a: any) => a.status === 'hired').length}
-                </p>
-              </div>
-            </>
-          )}
+           {isWorker && (
+             <>
+               <div className="bg-white rounded-lg shadow p-6">
+                 <h3 className="text-lg font-semibold text-gray-700">My Applications</h3>
+                 <p className="text-3xl font-bold text-blue-600 mt-2">{applications.length}</p>
+                 <p className="text-sm text-gray-500 mt-1">Jobs applied for</p>
+               </div>
+               <div className="bg-white rounded-lg shadow p-6">
+                 <h3 className="text-lg font-semibold text-gray-700">Pending Review</h3>
+                 <p className="text-3xl font-bold text-yellow-600 mt-2">
+                   {applications.filter((a: any) => a.status === 'pending').length}
+                 </p>
+                 <p className="text-sm text-gray-500 mt-1">Waiting for response</p>
+               </div>
+               <div className="bg-white rounded-lg shadow p-6">
+                 <h3 className="text-lg font-semibold text-gray-700">Hired</h3>
+                 <p className="text-3xl font-bold text-green-600 mt-2">
+                   {applications.filter((a: any) => a.status === 'hired').length}
+                 </p>
+                 <p className="text-sm text-gray-500 mt-1">Successful applications</p>
+               </div>
+             </>
+           )}
 
           {isEmployer && (
             <>
@@ -447,18 +450,24 @@ Link: ${p.link}
             </div>
           )}
 
-          {isWorker && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Quick Actions</h2>
-              </div>
-              <div className="space-y-3">
-                <Link href="/jobs" className="block w-full text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-                  Browse Jobs
-                </Link>
-              </div>
-            </div>
-          )}
+           {isWorker && (
+             <div className="bg-white rounded-lg shadow p-6">
+               <div className="flex justify-between items-center mb-4">
+                 <h2 className="text-xl font-semibold">Quick Actions</h2>
+               </div>
+               <div className="space-y-3">
+                 <Link href="/jobs" className="block w-full text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                   Browse Jobs
+                 </Link>
+                 <Link href="/jobs" className="block w-full text-center border border-blue-600 text-blue-600 py-2 rounded hover:bg-blue-50">
+                   Browse Employers
+                 </Link>
+                 <Link href="/post-a-job" className="block w-full text-center border border-green-600 text-green-600 py-2 rounded hover:bg-green-50">
+                   Post a Job (Employer Mode)
+                 </Link>
+               </div>
+             </div>
+           )}
         </div>
 
         {(isWorker || (!isAdmin && !isEmployer)) && (
