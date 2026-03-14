@@ -53,7 +53,10 @@ export default function UserDashboard() {
 
   const fetchJobs = async () => {
     try {
-      const res = await fetch('/api/jobs?limit=5');
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/jobs?limit=5', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -67,7 +70,7 @@ export default function UserDashboard() {
         setJobs([]);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching jobs:', error);
       setJobs([]);
     }
   };
@@ -76,6 +79,13 @@ export default function UserDashboard() {
     setProfileLoading(true);
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        setProjects([]);
+        setPortfolio([]);
+        setProfileLoading(false);
+        return;
+      }
       const res = await fetch('/api/user/profile', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -100,6 +110,11 @@ export default function UserDashboard() {
   const fetchMyApplications = async () => {
     try {
       const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        setApplications([]);
+        return;
+      }
       const res = await fetch('/api/applications?workerId=me', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -116,7 +131,7 @@ export default function UserDashboard() {
         setApplications([]);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching applications:', error);
       setApplications([]);
     }
   };
@@ -339,7 +354,7 @@ Link: ${p.link}
              </>
            )}
 
-          {isEmployer && (
+          {isEmployer && user && (
             <>
               <div className="bg-white rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-700">My Jobs</h3>
