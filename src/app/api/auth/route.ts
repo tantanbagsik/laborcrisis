@@ -38,6 +38,8 @@ export async function POST(request: NextRequest) {
         name: user.name,
         email: user.email,
         role: user.role,
+        projects: [],
+        portfolio: [],
         token: generateToken(user._id.toString())
       }, { status: 201 });
     }
@@ -45,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (action === 'login') {
       const { email, password } = body;
       
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ $or: [{ email: email }, { name: email }] });
       
       if (user && (await user.matchPassword(password))) {
         return NextResponse.json({
@@ -55,6 +57,8 @@ export async function POST(request: NextRequest) {
           role: user.role,
           phone: user.phone,
           skills: user.skills,
+          projects: user.projects,
+          portfolio: user.portfolio,
           token: generateToken(user._id.toString())
         });
       } else {

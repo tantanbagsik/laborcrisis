@@ -62,116 +62,38 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [featuredJobs, setFeaturedJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setMounted(true);
     fetchFeaturedJobs();
   }, []);
 
   const fetchFeaturedJobs = async () => {
     try {
-      const jobs = await api.getFeaturedJobs();
+      const res = await fetch('/api/jobs/featured');
+      const jobs = await res.json();
       if (jobs && jobs.length > 0) {
         setFeaturedJobs(jobs);
       } else {
-        setFeaturedJobs([
-          {
-            title: "PRODUCT DESIGNER",
-            company: "NESTLE BUSINESS SERVICES AOA INC",
-            location: "Manila, Philippines",
-            type: "Hybrid",
-            salary: "$600/month",
-          },
-          {
-            title: "RECEPTIONIST (BEAUTY INDUSTRY)",
-            company: "PRIVATE ADVERTISER",
-            location: "Singapore",
-            type: "Full time",
-            salary: "$2,500–3,500/month (SGD)",
-          },
-          {
-            title: "PROJECT ENGINEER (ELECTRICAL)",
-            company: "ALWAYS HIRED PTE. LTD.",
-            location: "Central Region, Singapore",
-            type: "Full time",
-            salary: "$4,000–5,000/month (SGD)",
-          },
-          {
-            title: "ACCOUNTANT",
-            company: "FELCOR PETROLEUM PTE LTD",
-            location: "Central Region, Singapore",
-            type: "Full time",
-            salary: "$4,000–5,300/month (SGD)",
-          },
-          {
-            title: "PRESCHOOL TEACHERS",
-            company: "WORKPLUS RECRUITMENT CENTRE PTE LTD",
-            location: "Singapore",
-            type: "Full time",
-            salary: "$3,000–4,000/month (SGD)",
-          },
-          {
-            title: "EVENTS MANAGER",
-            company: "NANYANG TECHNOLOGICAL UNIVERSITY",
-            location: "Pioneer, West Region, Singapore",
-            type: "Hybrid",
-            salary: "$4,000–5,300/month (SGD)",
-          },
-        ]);
+        setFeaturedJobs(getDefaultJobs());
       }
     } catch (error) {
       console.error("Error fetching jobs:", error);
-      setFeaturedJobs([
-        {
-          title: "PRODUCT DESIGNER",
-          company: "NESTLE BUSINESS SERVICES AOA INC",
-          location: "Manila, Philippines",
-          type: "Hybrid",
-          salary: "$600/month",
-        },
-        {
-          title: "RECEPTIONIST (BEAUTY INDUSTRY)",
-          company: "PRIVATE ADVERTISER",
-          location: "Singapore",
-          type: "Full time",
-          salary: "$2,500–3,500/month (SGD)",
-        },
-        {
-          title: "PROJECT ENGINEER (ELECTRICAL)",
-          company: "ALWAYS HIRED PTE. LTD.",
-          location: "Central Region, Singapore",
-          type: "Full time",
-          salary: "$4,000–5,000/month (SGD)",
-        },
-        {
-          title: "ACCOUNTANT",
-          company: "FELCOR PETROLEUM PTE LTD",
-          location: "Central Region, Singapore",
-          type: "Full time",
-          salary: "$4,000–5,300/month (SGD)",
-        },
-        {
-          title: "PRESCHOOL TEACHERS",
-          company: "WORKPLUS RECRUITMENT CENTRE PTE LTD",
-          location: "Singapore",
-          type: "Full time",
-          salary: "$3,000–4,000/month (SGD)",
-        },
-        {
-          title: "EVENTS MANAGER",
-          company: "NANYANG TECHNOLOGICAL UNIVERSITY",
-          location: "Pioneer, West Region, Singapore",
-          type: "Hybrid",
-          salary: "$4,000–5,300/month (SGD)",
-        },
-      ]);
+      setFeaturedJobs(getDefaultJobs());
     } finally {
       setLoading(false);
     }
   };
+
+  const getDefaultJobs = () => [
+    { title: "PRODUCT DESIGNER", company: "NESTLE BUSINESS SERVICES AOA INC", location: "Manila, Philippines", type: "Hybrid", salary: "$600/month" },
+    { title: "RECEPTIONIST (BEAUTY INDUSTRY)", company: "PRIVATE ADVERTISER", location: "Singapore", type: "Full time", salary: "$2,500–3,500/month (SGD)" },
+    { title: "PROJECT ENGINEER (ELECTRICAL)", company: "ALWAYS HIRED PTE. LTD.", location: "Central Region, Singapore", type: "Full time", salary: "$4,000–5,000/month (SGD)" },
+    { title: "ACCOUNTANT", company: "FELCOR PETROLEUM PTE LTD", location: "Central Region, Singapore", type: "Full time", salary: "$4,000–5,300/month (SGD)" },
+    { title: "PRESCHOOL TEACHERS", company: "WORKPLUS RECRUITMENT CENTRE PTE LTD", location: "Singapore", type: "Full time", salary: "$3,000–4,000/month (SGD)" },
+    { title: "EVENTS MANAGER", company: "NANYANG TECHNOLOGICAL UNIVERSITY", location: "Pioneer, West Region, Singapore", type: "Hybrid", salary: "$4,000–5,300/month (SGD)" },
+  ];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -320,14 +242,14 @@ export default function Home() {
           </div>
           
           <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-5 pt-10 pb-16 md:px-6 lg:px-8 lg:pt-24 lg:pb-24">
-            <div className={`max-w-3xl text-center transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className={`max-w-3xl text-center transition-all duration-700 ${!loading ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
                 <span className="block text-gray-900">When Labor is Critical,</span>
                 <span className="mt-2 block text-[#E61E25]">We Deliver</span>
               </h1>
             </div>
 
-            <div className={`mt-12 flex w-full justify-center transition-all duration-700 delay-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className={`mt-12 flex w-full justify-center transition-all duration-700 delay-200 ${!loading ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               <form onSubmit={handleSearch} className="w-full max-w-4xl rounded-[40px] bg-[#E5E5E5] px-5 pt-6 pb-8 flex flex-col gap-4 lg:justify-center shadow-xl" action="/jobs" method="GET">
                 <div className="flex items-center gap-3 rounded-xl bg-white px-5 py-3.5 text-[18px] text-neutral-900 shadow-sm">
                   <span className="inline-flex h-6 w-6 items-center justify-center text-neutral-700">
@@ -444,8 +366,8 @@ export default function Home() {
                   className="lc-category-card flex w-full flex-col justify-center rounded-4xl px-5 py-20 min-h-[255px] bg-white text-gray-900 shadow-[0_10px_30px_rgba(15,23,42,0.12)] cursor-pointer hover:shadow-[0_20px_40px_rgba(15,23,42,0.2)] transition-all duration-300 hover:-translate-y-2"
                   style={{ 
                     animationDelay: `${index * 100}ms`,
-                    animation: mounted ? 'fadeInUp 0.6s ease-out forwards' : 'none',
-                    opacity: mounted ? 1 : 0
+                    animation: !loading ? 'fadeInUp 0.6s ease-out forwards' : 'none',
+                    opacity: !loading ? 1 : 0
                   }}
                 >
                   <div className="flex items-center gap-4">
@@ -517,8 +439,8 @@ export default function Home() {
                   className="flex flex-col justify-between rounded-[20px] bg-white px-8 py-8 md:px-10 md:py-10 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 min-h-[280px]"
                   style={{ 
                     animationDelay: `${index * 150}ms`,
-                    animation: mounted ? 'fadeInUp 0.6s ease-out forwards' : 'none',
-                    opacity: mounted ? 1 : 0
+                    animation: !loading ? 'fadeInUp 0.6s ease-out forwards' : 'none',
+                    opacity: !loading ? 1 : 0
                   }}
                 >
                   <header className="space-y-2">
@@ -578,8 +500,8 @@ export default function Home() {
                   className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-2"
                   style={{ 
                     animationDelay: `${index * 100}ms`,
-                    animation: mounted ? 'fadeInUp 0.6s ease-out forwards' : 'none',
-                    opacity: mounted ? 1 : 0
+                    animation: !loading ? 'fadeInUp 0.6s ease-out forwards' : 'none',
+                    opacity: !loading ? 1 : 0
                   }}
                 >
                   <div className="mb-4">

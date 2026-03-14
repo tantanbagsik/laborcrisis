@@ -8,7 +8,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
     name: "",
     role: "worker",
@@ -21,9 +21,11 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    const loginData = { email: formData.username, password: formData.password };
+
     try {
       if (isLogin) {
-        const result = await api.login(formData);
+        const result = await api.login(loginData);
         if (result.token) {
           localStorage.setItem("token", result.token);
           localStorage.setItem("user", JSON.stringify(result));
@@ -37,7 +39,7 @@ export default function LoginPage() {
           setError(result.message || "Login failed");
         }
       } else {
-        const result = await api.register(formData);
+        const result = await api.register({ ...formData, email: formData.username });
         if (result.token) {
           localStorage.setItem("token", result.token);
           localStorage.setItem("user", JSON.stringify(result));
@@ -118,11 +120,11 @@ export default function LoginPage() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                 <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  type="text"
+                  value={formData.username}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   required
                 />

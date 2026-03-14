@@ -15,7 +15,19 @@ export async function POST(request: NextRequest) {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return NextResponse.json({ message: 'User already exists' }, { status: 400 });
+      // Update password and role
+      existingUser.password = password;
+      if (role) existingUser.role = role;
+      if (name) existingUser.name = name;
+      await existingUser.save();
+      
+      return NextResponse.json({
+        _id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
+        role: existingUser.role,
+        message: 'User updated successfully'
+      }, { status: 200 });
     }
 
     const user = await User.create({

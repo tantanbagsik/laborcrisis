@@ -13,6 +13,18 @@ const userSchema = new mongoose.Schema({
   },
   resume: { type: String },
   skills: [{ type: String }],
+  projects: [{
+    title: { type: String },
+    description: { type: String },
+    link: { type: String },
+    technologies: [{ type: String }]
+  }],
+  portfolio: [{
+    title: { type: String },
+    description: { type: String },
+    image: { type: String },
+    link: { type: String }
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 
