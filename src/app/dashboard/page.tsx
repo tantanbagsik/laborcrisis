@@ -54,7 +54,8 @@ export default function UserDashboard() {
   const fetchJobs = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/jobs?limit=5', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+      const res = await fetch(`${API_URL}/api/jobs?limit=5`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
       if (res.ok) {
@@ -86,7 +87,8 @@ export default function UserDashboard() {
         setProfileLoading(false);
         return;
       }
-      const res = await fetch('/api/user/profile', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+      const res = await fetch(`${API_URL}/api/auth`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -115,7 +117,8 @@ export default function UserDashboard() {
         setApplications([]);
         return;
       }
-      const res = await fetch('/api/applications?workerId=me', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+      const res = await fetch(`${API_URL}/api/applications?workerId=me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
